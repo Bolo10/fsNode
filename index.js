@@ -11,12 +11,12 @@ let persons = [
   },
   {
     id: 2,
-    name: "Arto Hellas2",
+    name: "Bill Gates",
     number: "040-123456",
   },
   {
     id: 3,
-    name: "Arto Hellas3",
+    name: "Albert Einstein",
     number: "040-123456",
   },
 ]
@@ -29,6 +29,7 @@ morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
 app.use(assignId)
 app.use(morgan(':method :url :response-time :body'))
 app.use(cors())
+app.use(express.static('build'))
 app.use(express.json())
 
 app.get('/', (req, res) => {
@@ -82,7 +83,7 @@ app.delete('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
   persons = persons.filter(person => person.id !== id)
 
-  response.status(204).end()
+  return response.status(204).end()
 })
 
 app.get('/api/persons/:id', (request, response) => {
