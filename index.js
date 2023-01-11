@@ -1,8 +1,10 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
 const { v4: uuidv4 } = require('uuid');
 const cors = require('cors')
+const PORT = process.env.PORT
 let persons = [
   {
     id: 1,
@@ -75,9 +77,13 @@ app.post('/api/persons', (request, response) => {
   response.json(person)
 })
 
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', async (req, res) => {
+  
   res.json(persons)
 })
+
+
+
 
 app.delete('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
@@ -97,7 +103,7 @@ app.get('/api/persons/:id', (request, response) => {
   }
 })
 
-const PORT = process.env.PORT ||  3001
+
 app.listen(PORT, () => {
   console.log(`******************************`)
   console.log(`Server running on port ${PORT}`)
