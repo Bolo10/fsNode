@@ -6,7 +6,7 @@ const { v4: uuidv4 } = require('uuid');
 const cors = require('cors')
 const PORT = process.env.PORT
 const Person = require('./models/person');
-
+const {errorHandler} = require('./middlewares/handleError')
 const assignId= (req, res, next) =>{
   req.id = uuidv4()
   next()
@@ -16,8 +16,11 @@ morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
 app.use(assignId)
 app.use(morgan(':method :url :response-time :body'))
 app.use(cors())
-app.use(express.json())
+
 app.use(express.static('build'))
+app.use(express.json())
+
+
 app.get('/', (req, res) => {
   res.send('<h1>Hello World!</h1>')
 })
@@ -60,6 +63,7 @@ app.get('/api/persons',  async (req, res) => {
    await Person
     .find({})
     .then(persons => {res.json(persons)})
+    
 
 })
 
@@ -71,24 +75,33 @@ app.delete('/api/persons/:id', (req, res, next) => {
     .then(result => {
       return res.status(204).end()
     })
-  
+    
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
   
-  Person.findById(req.params.id, (err, person)=>{
-    res.json(person)
-    if(err){
-      res.status(204).end()
-    }
-  })
+  
+  Person.findById(req.params.id)
+    .then(person => res.json(person))
+    .catch(error =>{
+      console.log('emntra')
+      next(error)
+    })
 
   })
 
+
+app.put('/api/persons/:id', (req, res, next) => {
+    const {name, number} = req.body
+    Person.findByIdAndUpdate(req.params.id, {name: name, number: number})
+      .then(result => {
+        return res.status(200).json(result)
+      })
+      
+})
+
+app.use(errorHandler)
     
-
-
-
 app.listen(PORT, () => {
   console.log(`******************************`)
   console.log(`Server running on port ${PORT}`)
