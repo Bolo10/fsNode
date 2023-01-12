@@ -1,11 +1,13 @@
 const mongoose = require('mongoose')
 mongoose.set('strictQuery', true)
+const autoIncrement = require('mongoose-plugin-autoinc')
 const personSchema = new mongoose.Schema({
-
+  id_person: Number,
   name: String,
   number: String
 
-})
+}, { collection: 'persons' })
+personSchema.plugin(autoIncrement.plugin, { model: 'Person', field: 'id_person' });
 const Person = mongoose.model('Person', personSchema)
 
 if (process.argv.length < 3) {
@@ -37,7 +39,7 @@ person.save().then(result => {
   console.log(`added ${result.name} number ${result.number} to phonebook!`)
   mongoose.connection.close()
 })
-process.exit(1)
+
 }
 
 
