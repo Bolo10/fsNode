@@ -7,7 +7,7 @@ const personSchema = new mongoose.Schema({
   number: String
 
 }, { collection: 'persons' })
-personSchema.plugin(autoIncrement.plugin, { model: 'Person', field: 'id_person' });
+personSchema.plugin(autoIncrement.plugin, { model: 'Person', field: 'id_person' })
 const Person = mongoose.model('Person', personSchema)
 
 if (process.argv.length < 3) {
@@ -18,7 +18,7 @@ if (process.argv.length < 3) {
 
 
 
-  const password = process.argv[2]
+const password = process.argv[2]
 
 //const url =  `mongodb+srv://fullstack:${password}@cluster0-ostce.mongodb.net/test?retryWrites=true`
 const url =
@@ -34,25 +34,25 @@ const person = new Person({
   number: phoneIn
 })
 if(process.argv.length === 5){
-person.save().then(result => {
+  person.save().then(result => {
 
-  console.log(`added ${result.name} number ${result.number} to phonebook!`)
-  mongoose.connection.close()
-})
+    console.log(`added ${result.name} number ${result.number} to phonebook!`)
+    mongoose.connection.close()
+  })
 
 }
 
 
 if(process.argv.length === 3){
   Person
-  .find({})
-  .then(persons=> {
-    console.log('phonebook:')
-    persons.forEach(person => {
+    .find({})
+    .then(persons=> {
+      console.log('phonebook:')
+      persons.forEach(person => {
       
-      console.log(`${person.name} ${person.number}`)
+        console.log(`${person.name} ${person.number}`)
+      })
+      mongoose.connection.close()
+      process.exit(1)
     })
-    mongoose.connection.close()
-    process.exit(1)
-  })
 }
