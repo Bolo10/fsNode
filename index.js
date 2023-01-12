@@ -39,7 +39,7 @@ const generateId = () => {
   return maxId + 1
 }
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const {name, number} = req.body
 
   if (!name || !number) {
@@ -54,6 +54,9 @@ app.post('/api/persons', (req, res) => {
 
   person.save().then(result =>{
     res.json(result)
+  })
+  .catch(error => {
+    next(error)
   })
 
   

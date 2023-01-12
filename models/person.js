@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 mongoose.set('strictQuery', true)
 const url = process.env.MONGODB_URI
+const uniqueValidator = require('mongoose-unique-validator');
 //const autoIncrement = require('mongoose-plugin-autoinc')
 console.log('connecting to', url)
 
@@ -14,8 +15,10 @@ mongoose.connect(url)
 
   const personSchema = new mongoose.Schema({
     //id_person: Number,
-    name: String,
-    number: String
+    name: {type: String,
+    unique: true},
+    number: {type: String,
+    minlength: 8}
   
   }, { collection: 'persons' })
   personSchema.set('toJSON', {
@@ -26,4 +29,5 @@ mongoose.connect(url)
   }
 })
 //personSchema.plugin(autoIncrement.plugin, { model: 'Person', field: 'id_person' });
+personSchema.plugin(uniqueValidator, { message: `{PATH} debe ser único` })
 module.exports = mongoose.model('Person', personSchema)
